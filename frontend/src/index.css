@@ -4,14 +4,29 @@
 
 @layer utilities {
   :root {
-    line-height: 1.5;
-    font-weight: 400;
-
     text-transform: capitalize;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer base {
+  input[type="text"], input[type="email"], input[type="password"] {
+    @apply rounded-md bg-slate-200
+  }
+
+  .input-container {
+    @apply flex flex-col
+  }
+
+  label {
+    @apply text-xs
+  }
+
+  button {
+    @apply text-base
   }
 }
