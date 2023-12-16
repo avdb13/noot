@@ -16,7 +16,7 @@ const CreateQuiz = () => {
 
   return (
     <div className="grow w-full flex flex-col items-center gap-8">
-      <input className="h-[5%] w-[40%]" type="text" />
+      <TextInput />
 
       <input type="file" />
 
@@ -28,7 +28,7 @@ const CreateQuiz = () => {
           >
             <Checkbox />
             <input
-              className="w-full"
+              className="w-full text-xl px-2"
               type="text"
               style={{ background: "white" }}
             />
@@ -38,5 +38,16 @@ const CreateQuiz = () => {
     </div>
   );
 };
+
+const TextInput = () => {
+  const [editing, setEditing] = useState(false);
+  return (
+    <span className="w-1/2 flex border-2 border-slate-200">
+    <input className={`px-2 text-center text-3xl focus:outline-none grow ${editing ? "bg-slate-100" : "bg-white"}`} disabled={!editing} type="text" />
+      <button className="basis-[10%] text-xl border-l-2 border-slate-200 bg-white p-2" onClick={() => setEditing(!editing)}>{editing ? "save" : "edit"}</button>
+    </span>
+
+  )
+}
 
 export default CreateQuiz;

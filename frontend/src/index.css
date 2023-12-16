@@ -18,9 +18,9 @@
 }
 
 @layer base {
-  input[type="text"], input[type="email"], input[type="password"] {
-    @apply rounded-md bg-slate-200
-  }
+  /* input[type="text"], input[type="email"], input[type="password"] { */
+  /*   @apply rounded-md bg-slate-200 */
+  /* } */
 
   .input-container {
     @apply flex flex-col normal-case
