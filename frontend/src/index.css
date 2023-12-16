@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  body, #root {
-    height: 100vh;
-  }
-
   :root {
     text-transform: capitalize;
 
@@ -15,6 +11,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  *{box-sizing:border-box;}
 }
 
 @layer base {

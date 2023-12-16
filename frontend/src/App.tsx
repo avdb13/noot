@@ -16,7 +16,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="prose prose-slate 2xl:prose-2xl flex flex-col justify-center items-center gap-8 h-screen w-screen [&>*:capitalize]">
+      <div className="prose prose-slate 2xl:prose-2xl flex flex-col justify-center items-center h-screen w-screen [&>*:capitalize]">
         <nav className="basis-1/8 flex-initial flex justify-between sticky bg-zinc-200 w-full uppercase gap-4 p-4 font-bold">
           <Link to="/">home</Link>
           <div className="grow"></div>

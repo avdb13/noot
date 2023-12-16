@@ -1,108 +1,104 @@
-import { ComponentProps, useId, useState } from "react";
+import { ComponentProps, useId, useMemo, useState } from "react";
 
-const Checkbox = () => {
-  const [checked, setChecked] = useState(false);
-  console.log(checked)
-  const id = Math.random().toString();
+const CreateQuiz = () => {
+  // <nav className="basis-1/6 flex-initial flex justify-between sticky bg-zinc-200 w-1/2 uppercase gap-4 p-4 font-bold">
+  //   <button>save</button>
+  //   <button>exit</button>
+  // </nav>
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [selection, setSelection] = useState(0);
 
   return (
-    <label className={`box-border rounded-sm border-4 h-8 w-8 ${checked ? "bg-slate-400" : "bg-white"}`} htmlFor={id}>
-      <input
-        id={id}
-        type="checkbox"
-        className="hidden"
-        checked={checked}
-        onClick={() => setChecked(!checked)}
-      />
-    </label>
+    <div className="w-full grow flex items-center gap-8">
+      <ul className="pl-6 flex flex-col basis-1/6 bg-slate-100 h-full gap-2 p-2 list-decimal">
+        <li className="h-32 w-full bg-sky-50 border-2">ok</li>
+        <div className="flex flex-col gap-2">
+          <button className="w-full p-2 bg-slate-200 ">add question</button>
+          <button className="w-full p-2 bg-slate-200 ">question bank</button>
+        </div>
+      </ul>
+      <Slide selection={selection} setQuestions={setQuestions} questions={questions} />
+    </div>
   );
 };
-const CreateQuiz = () => {
-  const [amount, setAmount] = useState(3);
-  const [picture, setPicture] = useState<string | null>(null);
+
+type Question = {
+  question: string,
+  answers: [string, boolean][],
+  picture: File | null,
+}
+
+const Slide = ({ selection, questions, setQuestions }: { selection:number, questions: Question[], setQuestions: (_: Question[]) => void }) => {
+  const question = useMemo(() => questions[selection], [questions, selection]);
 
   const handleChange = (event: React.SyntheticEvent) => {
     const e = event.target as HTMLInputElement;
 
-    if (e.files && e.files[0]) {
-      setPicture(URL.createObjectURL(e.files[0]));
+    const picture = e.files?.item(0) || null;
+    if (picture) {
+      setQuestions([...questions.filter((_, i) => i === selection), ({...questions[selection], picture})]);
     }
   };
-
+      // <button onClick={() => setSlides([])}>SAVE</button>
   return (
-    <div className="grow flex items-center gap-8">
-      <div className="basis-1/3 bg-slate-200 h-full">
-      
-      </div>
-      <div className="flex-initial flex flex-col items-center gap-8">
-        <nav className="basis-1/6 flex-initial flex justify-between sticky bg-zinc-200 w-1/2 uppercase gap-4 p-4 font-bold">
-          <button>save</button>
-          <button>exit</button>
-        </nav>
-        <TextInput />
+    <div id="editor" className="grow flex-initial flex flex-col items-center gap-8 grow">
+      <TextInput className="w-[60%] text" />
 
-        <div className="basis-1/2 bg-slate-100 rounded-md shadow-inner w-1/3 flex items-center justify-center">
-          <input
-            id="image-picker"
-            type="file"
-            className="hidden"
-            onChange={handleChange}
-          />
-          <label
-            className="relative group basis-full flex flex-col items-center justify-center p-32"
-            htmlFor="image-picker"
-          >
-            {picture ? (
-              <>
-                <img src={picture} className="peer shadow-md duration-300 transition-all hover:blur-[2px]" />
-                <ImageIcon className="absolute center duration-300 transition-all peer-hover:opacity-50 opacity-0 fill-current text-slate-600" />
-              </>
+      <div className="h-64 w-1/2 shrink bg-slate-100 rounded-md shadow-inner flex items-center justify-center">
+        <input
+          id="image-picker"
+          type="file"
+          className="hidden"
+          onChange={handleChange}
+        />
+        <label
+          className="h-full w-full relative group flex flex-col items-center justify-center"
+          htmlFor="image-picker"
+        >
+            {question && question.picture ? (
+              <img src={URL.createObjectURL(question.picture)} className="w-full h-full object-contain" />
             ) : (
               <>
-                <ImageIcon className="duration-300 transition-all group-hover:opacity-50 opacity-75 fill-current text-slate-600" />
-                <p className="text-lg font-bold text-slate-600">
-                  click here to select your image
-                </p>
+              <ImageIcon className="duration-300 transition-all group-hover:opacity-50 opacity-75 fill-current text-slate-600" />
+              <p className="text-xs font-bold text-slate-600">
+                click here to select your image
+              </p>
               </>
             )}
-          </label>
-        </div>
+        </label>
+      </div>
 
-        <div className="basis-1/2 grid grid-cols-2 gap-4">
-          {[...Array(4).keys()].map((i) => (
-            <div
-              className="bg-sky-100 flex items-center p-4 rounded-md gap-2"
-              style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
-            >
-              <div className="flex items-center gap-4">
-                <Checkbox />
-                <TextInput />
-              </div>
+      <div className="w-[60%] grid grid-cols-2 gap-4">
+        {[...Array(4).keys()].map((i) => (
+          <div
+            className="bg-sky-100 flex items-center p-2 rounded-md w-full"
+            style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
+          >
+            <div className="w-full flex items-center gap-2 grow">
+              <Checkbox />
+              <TextInput className="w-full" />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-const TextInput = () => {
+const TextInput = (props: ComponentProps<"input">) => {
   const [editing, setEditing] = useState(false);
+
   return (
-    <div className="flex border-2 border-slate-200">
+    <div className={`min-w-0 flex border-2 border-slate-200  ${props.className}`}>
       <input
-        className={`px-2 text-center text-xl focus:outline-none grow ${
+        onBlur={() => setEditing(false)}
+        onFocus={() => setEditing(true)}
+        className={`grow px-1 text-center focus:outline-none ${
           editing ? "bg-slate-100" : "bg-white"
         }`}
         disabled={!editing}
         type="text"
       />
-      <button
-        className="basis-[10%] text-sm border-l-2 border-slate-200 bg-white p-2"
-        onClick={() => setEditing(!editing)}
-      >
-        {editing ? "save" : "edit"}
-      </button>
     </div>
   );
 };
@@ -110,8 +106,8 @@ const TextInput = () => {
 const ImageIcon = (props: ComponentProps<"svg">) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={80}
-    height={80}
+    width={24}
+    height={24}
     viewBox="0 0 24 24"
     {...props}
   >
@@ -124,5 +120,28 @@ const ImageIcon = (props: ComponentProps<"svg">) => (
     />
   </svg>
 );
+
+const Checkbox = () => {
+  const [checked, setChecked] = useState(false);
+  console.log(checked);
+  const id = Math.random().toString();
+
+  return (
+    <label
+      className={`box-border rounded-sm border-2 h-4 w-4 ${
+        checked ? "bg-slate-400" : "bg-white"
+      }`}
+      htmlFor={id}
+    >
+      <input
+        id={id}
+        type="checkbox"
+        className="hidden"
+        checked={checked}
+        onClick={() => setChecked(!checked)}
+      />
+    </label>
+  );
+};
 
 export default CreateQuiz;
