@@ -1,5 +1,16 @@
-import { useState } from "react"
+import { useId, useState } from "react";
 
+const Checkbox = () => {
+  const [checked, setChecked] = useState(false);
+  const id = useId();
+
+  return (
+    <span>
+      <input id={id} type="checkbox" className="hidden" onClick={() => setChecked(!checked)} />
+      <label className="whitespace-nowrap font-bold text-xl" htmlFor={id}>{checked ? "[X]" : "[ ]"}</label>
+    </span>
+  );
+};
 const CreateQuiz = () => {
   const [amount, setAmount] = useState(3);
 
@@ -10,15 +21,22 @@ const CreateQuiz = () => {
       <input type="file" />
 
       <div className="grid grid-cols-2 gap-4">
-        {[...Array(4).keys()].map(i => (
-          <div className="bg-slate-200 flex items-center p-8 rounded-md">
-            <input type="checkbox" className="scale-[2]" />
-            <input className="h-[5%] w-[40%]" type="text" />
+        {[...Array(4).keys()].map((i) => (
+          <div
+            className="bg-sky-100 flex items-center p-8 rounded-md gap-4"
+            style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
+          >
+            <Checkbox />
+            <input
+              className="w-full"
+              type="text"
+              style={{ background: "white" }}
+            />
           </div>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default CreateQuiz;
