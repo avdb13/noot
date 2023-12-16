@@ -2,21 +2,19 @@ import { ComponentProps, useId, useState } from "react";
 
 const Checkbox = () => {
   const [checked, setChecked] = useState(false);
-  const id = useId();
+  console.log(checked)
+  const id = Math.random().toString();
 
   return (
-    <span>
+    <label className={`box-border rounded-sm border-4 h-8 w-8 ${checked ? "bg-slate-400" : "bg-white"}`} htmlFor={id}>
       <input
         id={id}
         type="checkbox"
         className="hidden"
+        checked={checked}
         onClick={() => setChecked(!checked)}
       />
-      <label className="whitespace-nowrap font-bold text-xl" htmlFor={id}>
-    <div className={`${checked}`} />
-        {checked ? "[X]" : "[ ]"}
-      </label>
-    </span>
+    </label>
   );
 };
 const CreateQuiz = () => {
@@ -32,46 +30,57 @@ const CreateQuiz = () => {
   };
 
   return (
-    <div className="grow w-full flex flex-col items-center gap-8">
-      <TextInput />
-
-      <div className="h-1/2 bg-slate-100 rounded-md shadow-inner w-1/2 flex items-center justify-center">
-        <input
-          id="image-picker"
-          type="file"
-          className="hidden"
-          onChange={handleChange}
-        />
-        <label
-          className="relative group w-full h-full flex flex-col items-center justify-center p-32"
-          htmlFor="image-picker"
-        >
-          {picture ? (
-            <>
-              <img src={picture} className="peer shadow-md duration-300 transition-all hover:blur-[2px]" />
-              <ImageIcon className="absolute center duration-300 transition-all peer-hover:opacity-50 opacity-0 fill-current text-slate-600" />
-            </>
-          ) : (
-            <>
-              <ImageIcon className="duration-300 transition-all group-hover:opacity-50 opacity-75 fill-current text-slate-600" />
-              <p className="text-lg font-bold text-slate-600">
-                click here to select your image
-              </p>
-            </>
-          )}
-        </label>
+    <div className="grow flex items-center gap-8">
+      <div className="basis-1/3 bg-slate-200 h-full">
+      
       </div>
+      <div className="flex-initial flex flex-col items-center gap-8">
+        <nav className="basis-1/6 flex-initial flex justify-between sticky bg-zinc-200 w-1/2 uppercase gap-4 p-4 font-bold">
+          <button>save</button>
+          <button>exit</button>
+        </nav>
+        <TextInput />
 
-      <div className="grid grid-cols-2 gap-4">
-        {[...Array(4).keys()].map((i) => (
-          <div
-            className="bg-sky-100 flex items-center p-8 rounded-md gap-4"
-            style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
+        <div className="basis-1/2 bg-slate-100 rounded-md shadow-inner w-1/3 flex items-center justify-center">
+          <input
+            id="image-picker"
+            type="file"
+            className="hidden"
+            onChange={handleChange}
+          />
+          <label
+            className="relative group basis-full flex flex-col items-center justify-center p-32"
+            htmlFor="image-picker"
           >
-            <Checkbox />
-            <TextInput />
-          </div>
-        ))}
+            {picture ? (
+              <>
+                <img src={picture} className="peer shadow-md duration-300 transition-all hover:blur-[2px]" />
+                <ImageIcon className="absolute center duration-300 transition-all peer-hover:opacity-50 opacity-0 fill-current text-slate-600" />
+              </>
+            ) : (
+              <>
+                <ImageIcon className="duration-300 transition-all group-hover:opacity-50 opacity-75 fill-current text-slate-600" />
+                <p className="text-lg font-bold text-slate-600">
+                  click here to select your image
+                </p>
+              </>
+            )}
+          </label>
+        </div>
+
+        <div className="basis-1/2 grid grid-cols-2 gap-4">
+          {[...Array(4).keys()].map((i) => (
+            <div
+              className="bg-sky-100 flex items-center p-4 rounded-md gap-2"
+              style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
+            >
+              <div className="flex items-center gap-4">
+                <Checkbox />
+                <TextInput />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -80,21 +89,21 @@ const CreateQuiz = () => {
 const TextInput = () => {
   const [editing, setEditing] = useState(false);
   return (
-    <span className="w-1/2 flex border-2 border-slate-200">
+    <div className="flex border-2 border-slate-200">
       <input
-        className={`px-2 text-center text-3xl focus:outline-none grow ${
+        className={`px-2 text-center text-xl focus:outline-none grow ${
           editing ? "bg-slate-100" : "bg-white"
         }`}
         disabled={!editing}
         type="text"
       />
       <button
-        className="basis-[10%] text-xl border-l-2 border-slate-200 bg-white p-2"
+        className="basis-[10%] text-sm border-l-2 border-slate-200 bg-white p-2"
         onClick={() => setEditing(!editing)}
       >
         {editing ? "save" : "edit"}
       </button>
-    </span>
+    </div>
   );
 };
 
