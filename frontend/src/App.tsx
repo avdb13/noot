@@ -9,6 +9,7 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Login from "./Login";
 import SelectionMenu from "./quiz/Selection";
+import CreateQuiz from "./quiz/Create";
 
 const App = () => {
   const user = useContext(UserContext);
@@ -21,10 +22,12 @@ const App = () => {
           <div className="grow"></div>
           <Link to="/account/login">login</Link>
           <Link to="/account/register">register</Link>
+          {user ? <Link to="/account/create">create</Link> : null}
         </nav>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/account/login" element={<Login />} />
+          <Route path="/account/create" element={<CreateQuiz />} />
         </Routes>
         <div className="text-slate-600 bg-slate-200 w-full p-4">
           <p>Noot, just another app</p>
