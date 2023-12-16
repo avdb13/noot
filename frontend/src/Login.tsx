@@ -1,12 +1,12 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useContext, useRef, useState } from "react";
-import { Form , useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "./providers/UserContext";
 
 const Login = () => {
   const { setUser } = useContext(UserContext);
 
-  const [alert, setAlert] = useState<string | null>(null);
+  const [error, setError] = useState<AxiosError | null>(null);
   const navigate = useNavigate();
 
   const idRef = useRef<HTMLInputElement>(null);
@@ -26,16 +26,19 @@ const Login = () => {
 
       navigate("/account/profile");
     }).catch(e => {
-      console.log(e);
+      if (e instanceof AxiosError) {
+        setError(e)
+      }
     });
   };
   return (
-    <div className="prose prose-slate 2xl:prose-2xl flex flex-col justify-center items-center gap-4 h-screen w-screen [&>*:capitalize]">
-      <Form
+    <>
+      <form
         method="POST"
         onSubmit={handleSubmit}
         className="flex flex-col gap-2"
       >
+        {error ? (<p className="text-red-200">{error.cause?.message || error.message}</p>) : null}
         <div className="input-container">
           <label htmlFor="id-input">username or email</label>
           <input id="id-input" type="text" ref={idRef} />
@@ -45,8 +48,8 @@ const Login = () => {
           <input id="password-input" type="password" ref={passwordRef} />
         </div>
         <button type="submit">login</button>
-      </Form>
-    </div>
+      </form>
+    </>
   );
 };
 

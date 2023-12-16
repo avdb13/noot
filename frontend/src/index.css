@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer utilities {
+  body, #root {
+    height: 100vh;
+  }
+
   :root {
     text-transform: capitalize;
 
@@ -30,3 +34,5 @@
     @apply text-base
   }
 }
+
+
