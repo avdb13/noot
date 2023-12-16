@@ -22,6 +22,11 @@
   /*   @apply rounded-md bg-slate-200 */
   /* } */
 
+  .center {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+  }
   .input-container {
     @apply flex flex-col normal-case
   }
