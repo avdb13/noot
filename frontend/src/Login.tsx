@@ -32,24 +32,26 @@ const Login = () => {
     });
   };
   return (
-    <>
+    <div
+      className="grow flex-initial flex flex-col justify-center items-center gap-8 grow"
+    >
       <form
         method="POST"
         onSubmit={handleSubmit}
         className="flex flex-col gap-2"
       >
         {error ? (<p className="text-red-200">{error.cause?.message || error.message}</p>) : null}
-        <div className="input-container">
+        <div className="input-container ">
           <label htmlFor="id-input">username or email</label>
-          <input id="id-input" type="text" ref={idRef} />
+          <input id="id-input" className="border-2 bg-slate-50 border-slate-200 rounded-sm px-1" type="text" ref={idRef} />
         </div>
         <div className="input-container">
           <label htmlFor="password-input">password</label>
-          <input id="password-input" type="password" ref={passwordRef} />
+          <input id="password-input" className="border-2 bg-slate-50 border-slate-200 rounded-sm px-1" type="password" ref={passwordRef} />
         </div>
-        <button type="submit">login</button>
+        <button type="submit" className="bg-slate-100 py-1 my-2 text-sm">login</button>
       </form>
-    </>
+    </div>
   );
 };
 

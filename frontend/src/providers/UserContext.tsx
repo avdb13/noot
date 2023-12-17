@@ -7,14 +7,14 @@ export type User = {
 }
 
 export type UserState = {
-  user?: User;
-  setUser: (_: User) => void;
+  user: User | null;
+  setUser: (_: User | null) => void;
 }
 
 export const UserContext = createContext({} as UserState);
 
 const UserProvider = (props: PropsWithChildren) => {
-  const [user, setUser] = useState<User | undefined>();
+  const [user, setUser] = useState<User | null>(null);
 
   return (
     <UserContext.Provider value={{user, setUser}}>

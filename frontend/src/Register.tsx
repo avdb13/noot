@@ -28,25 +28,24 @@ const Register = () => {
   };
   return (
     <div className="prose prose-slate 2xl:prose-2xl flex flex-col justify-center items-center gap-4 h-screen w-screen [&>*:capitalize]">
-      <Form
-        method="POST"
+      <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-2"
       >
         <div className="input-container">
           <label htmlFor="username-input">username</label>
-          <input id="username-input" type="text" ref={usernameRef} />
+          <input id="username-input" className="border-2 bg-slate-50 border-slate-200 rounded-sm px-1" type="text" ref={usernameRef} />
         </div>
         <div className="input-container">
           <label htmlFor="email-input">email</label>
-          <input id="email-input" type="email" ref={emailRef} />
+          <input id="email-input" className="border-2 bg-slate-50 border-slate-200 rounded-sm px-1" type="email" ref={emailRef} />
         </div>
         <div className="input-container">
           <label htmlFor="password-input">password</label>
-          <input id="password-input" type="password" ref={passwordRef} />
+          <input id="password-input" className="border-2 bg-slate-50 border-slate-200 rounded-sm px-1" type="password" ref={passwordRef} />
         </div>
-        <button type="submit">register</button>
-      </Form>
+        <button type="submit" className="bg-slate-100 py-1 my-2 text-sm">register</button>
+      </form>
     </div>
   );
 };
