@@ -1,71 +1,81 @@
-import { ComponentProps, useId, useMemo, useRef, useState } from "react";
+import { ComponentProps, useId, useState } from "react";
 
 const CreateQuiz = () => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const newQuestion = {picture: new Blob(), answers: ["", "", "", ""], correct: [false, false, false, false], question: ""};
+  const [questions, setQuestions] = useState<Question[]>([newQuestion]);
   const [selection, setSelection] = useState(0);
 
+  console.log(questions)
   return (
     <div className="w-full grow flex items-center gap-8">
       <ul className="pl-6 flex flex-col basis-1/6 bg-slate-100 h-full gap-2 p-2 list-decimal">
-        <li className="h-32 w-full bg-sky-50 border-2">ok</li>
+          {
+            [...Array(questions.length).keys()].map((i) => (
+            <button key={i+"readonly"} onClick={() => setSelection(i)} className="h-32 w-full bg-sky-50 border-2 scale-[10%]">
+              <Slide
+                setQuestion={() => {}}
+                question={questions[i]}
+                readonly
+              />
+            </button>
+          ))
+          }
         <div className="flex flex-col gap-2">
-          <button className="w-full p-2 bg-slate-200 ">add question</button>
+          <button className="w-full p-2 bg-slate-200 " onClick={() => setQuestions([...questions, newQuestion])}>add question</button>
           <button className="w-full p-2 bg-slate-200 ">question bank</button>
         </div>
       </ul>
-      {[...Array(questions.length + 1).keys()].map((i) => (
-        <Slide
-          setQuestion={(question) =>
-            setQuestions(questions.map((q, j) => (j === i ? question : q)))
-          }
-        question={questions[0] || {picture: null, answers: [], question: ""}}
-        />
-      ))}
+      <Slide
+        setQuestion={(p) => setQuestions(questions.map((q, j) => j !== selection ? q : p))}
+        question={questions[selection]}
+      />
     </div>
   );
 };
 
 type Question = {
   question: string;
-  answers: [string, boolean][];
-  picture: File | null;
+  answers: string[];
+  correct: boolean[];
+  picture: Blob;
 };
 
 const Slide = ({
   question,
   setQuestion,
+  readonly = false,
 }: {
   question: Question;
   setQuestion: (_: Question) => void;
+  readonly?: boolean;
 }) => {
-  const handleChange = (event: React.SyntheticEvent) => {
+  const handleFileChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const e = event.target as HTMLInputElement;
 
-    const picture = e.files?.item(0) || null;
-    if (picture) {
-      setQuestion({ ...question, picture });
+    if (e.files) {
+      setQuestion({...question, picture: e.files[0]})
     }
   };
 
+  console.log(question.picture.type)
   return (
     <div
       id="editor"
-      className="grow flex-initial flex flex-col items-center gap-8 grow"
+      className={`grow flex-initial flex flex-col items-center gap-8 grow ${readonly ? "pointer-events-none" : null}`}
     >
-      <TextInput className="w-[60%] text" />
-
+      <TextInput value={question.question} onChange={(e) => setQuestion({...question, question: e.target.value})} className="w-[60%] text" />
       <div className="h-64 w-1/2 shrink bg-slate-100 rounded-md shadow-inner flex items-center justify-center">
         <input
           id="image-picker"
           type="file"
           className="hidden"
-          onChange={handleChange}
+          onChange={handleFileChange}
         />
         <label
           className="h-full w-full relative group flex flex-col items-center justify-center"
           htmlFor="image-picker"
         >
-          {question.picture ? (
+          {question.picture.size > 0 ? (
             <img
               src={URL.createObjectURL(question.picture)}
               className="w-full h-full object-contain"
@@ -89,17 +99,17 @@ const Slide = ({
           >
             <div className="w-full flex items-center gap-2 grow">
               <Checkbox
-                onChange={(e) =>
+                onChange={(e) => setQuestion ?
                   setQuestion({
                     ...question,
-                    answers: question.answers.map((a, j) =>
+                    correct: question.correct.map((a, j) =>
                       j === i
-                        ? [question.answers.at(i)?.at(0) as string || "", e.target.checked]
+                        ? e.target.checked
                         : a,
                     ),
                   })
-                }
-                checked={question.answers.at(i)?.at(1) as boolean || false}
+                  : null}
+                checked={question.correct[i]}
               />
               <TextInput className="w-full"
                 onChange={(e) =>
@@ -107,12 +117,12 @@ const Slide = ({
                     ...question,
                     answers: question.answers.map((a, j) =>
                       j === i
-                        ? [e.target.value, question.answers.at(i)?.at(1) as boolean || false]
+                        ? e.target.value
                         : a,
                     ),
                   })
                 }
-                value={question.answers.at(i)?.at(0) as string || ""}
+                value={question.answers[i]}
               />
             </div>
           </div>
@@ -123,21 +133,18 @@ const Slide = ({
 };
 
 const TextInput = (props: ComponentProps<"input">) => {
-  const [editing, setEditing] = useState(false);
+  const {className, ...rest} = props;
 
   return (
     <div
-      className={`min-w-0 flex border-2 border-slate-200  ${props.className}`}
+      className={`min-w-0 flex border-2 border-slate-200  ${className}`}
     >
       <input
-        onBlur={() => setEditing(false)}
-        onFocus={() => setEditing(true)}
-        className={`grow px-1 text-center focus:outline-none ${
-          editing ? "bg-slate-100" : "bg-white"
-        }`}
-        disabled={!editing}
+        className={`grow px-1 text-center focus:outline-none
+          bg-slate-100 focus:bg-white
+        `}
         type="text"
-        {...props}
+        {...rest}
       />
     </div>
   );
