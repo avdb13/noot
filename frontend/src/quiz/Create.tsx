@@ -1,32 +1,43 @@
 import { ComponentProps, useId, useState } from "react";
 
 const CreateQuiz = () => {
-  const newQuestion = {picture: new Blob(), answers: ["", "", "", ""], correct: [false, false, false, false], question: ""};
+  const newQuestion = {
+    picture: null,
+    answers: ["", "", "", ""],
+    correct: [false, false, false, false],
+    question: "",
+  };
   const [questions, setQuestions] = useState<Question[]>([newQuestion]);
   const [selection, setSelection] = useState(0);
 
-  console.log(questions)
+  console.log(questions);
   return (
     <div className="w-full grow flex items-center gap-8">
       <ul className="pl-6 flex flex-col basis-1/6 bg-slate-100 h-full gap-2 p-2 list-decimal">
-          {
-            [...Array(questions.length).keys()].map((i) => (
-            <button key={i+"readonly"} onClick={() => setSelection(i)} className="h-32 w-full bg-sky-50 border-2 scale-[10%]">
-              <Slide
-                setQuestion={() => {}}
-                question={questions[i]}
-                readonly
-              />
-            </button>
-          ))
-          }
+        {[...Array(questions.length).keys()].map((i) => (
+          <button
+            key={i + "readonly"}
+            onClick={() => setSelection(i)}
+            className="h-32 w-full bg-sky-50 border-2 scale-[10%]"
+          >
+            <Slide setQuestion={() => {}} question={questions[i]} />
+          </button>
+        ))}
         <div className="flex flex-col gap-2">
-          <button className="w-full p-2 bg-slate-200 " onClick={() => setQuestions([...questions, newQuestion])}>add question</button>
+          <button
+            className="w-full p-2 bg-slate-200 "
+            onClick={() => setQuestions([...questions, newQuestion])}
+          >
+            add question
+          </button>
           <button className="w-full p-2 bg-slate-200 ">question bank</button>
         </div>
       </ul>
       <Slide
-        setQuestion={(p) => setQuestions(questions.map((q, j) => j !== selection ? q : p))}
+        selection={selection}
+        setQuestion={(p) =>
+          setQuestions(questions.map((q, j) => (j !== selection ? q : p)))
+        }
         question={questions[selection]}
       />
     </div>
@@ -37,45 +48,50 @@ type Question = {
   question: string;
   answers: string[];
   correct: boolean[];
-  picture: Blob;
+  picture: File | null;
 };
 
 const Slide = ({
   question,
   setQuestion,
-  readonly = false,
+  selection,
 }: {
   question: Question;
   setQuestion: (_: Question) => void;
-  readonly?: boolean;
+  selection?: number;
 }) => {
   const handleFileChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const e = event.target as HTMLInputElement;
 
     if (e.files) {
-      setQuestion({...question, picture: e.files[0]})
+      setQuestion({ ...question, picture: e.files[0] });
     }
   };
 
-  console.log(question.picture.type)
   return (
     <div
       id="editor"
-      className={`grow flex-initial flex flex-col items-center gap-8 grow ${readonly ? "pointer-events-none" : null}`}
+      className={`grow flex-initial flex flex-col items-center gap-8 grow ${
+        selection ? null : "pointer-events-none"
+      }`}
     >
-      <TextInput value={question.question} onChange={(e) => setQuestion({...question, question: e.target.value})} className="w-[60%] text" />
+      <TextInput
+        value={question.question}
+        onChange={(e) => setQuestion({ ...question, question: e.target.value })}
+        className="w-[60%] text"
+      />
       <div className="h-64 w-1/2 shrink bg-slate-100 rounded-md shadow-inner flex items-center justify-center">
         <input
-          id="image-picker"
+          id={`image-picker-${selection}`}
           type="file"
-          className="hidden"
+          className="opacity-0 absolute"
           onChange={handleFileChange}
         />
         <label
           className="h-full w-full relative group flex flex-col items-center justify-center"
-          htmlFor="image-picker"
+          htmlFor={`image-picker-${selection}`}
         >
-          {question.picture.size > 0 ? (
+          {question.picture ? (
             <img
               src={URL.createObjectURL(question.picture)}
               className="w-full h-full object-contain"
@@ -99,26 +115,25 @@ const Slide = ({
           >
             <div className="w-full flex items-center gap-2 grow">
               <Checkbox
-                onChange={(e) => setQuestion ?
-                  setQuestion({
-                    ...question,
-                    correct: question.correct.map((a, j) =>
-                      j === i
-                        ? e.target.checked
-                        : a,
-                    ),
-                  })
-                  : null}
+                onChange={(e) =>
+                  setQuestion
+                    ? setQuestion({
+                        ...question,
+                        correct: question.correct.map((a, j) =>
+                          j === i ? e.target.checked : a,
+                        ),
+                      })
+                    : null
+                }
                 checked={question.correct[i]}
               />
-              <TextInput className="w-full"
+              <TextInput
+                className="w-full"
                 onChange={(e) =>
                   setQuestion({
                     ...question,
                     answers: question.answers.map((a, j) =>
-                      j === i
-                        ? e.target.value
-                        : a,
+                      j === i ? e.target.value : a,
                     ),
                   })
                 }
@@ -133,12 +148,10 @@ const Slide = ({
 };
 
 const TextInput = (props: ComponentProps<"input">) => {
-  const {className, ...rest} = props;
+  const { className, ...rest } = props;
 
   return (
-    <div
-      className={`min-w-0 flex border-2 border-slate-200  ${className}`}
-    >
+    <div className={`min-w-0 flex border-2 border-slate-200  ${className}`}>
       <input
         className={`grow px-1 text-center focus:outline-none
           bg-slate-100 focus:bg-white
