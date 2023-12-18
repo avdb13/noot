@@ -13,14 +13,14 @@ const CreateQuiz = () => {
   console.log(questions);
   return (
     <div className="w-full grow flex items-center gap-8">
-      <ul className="pl-6 flex flex-col basis-1/6 bg-slate-100 h-full gap-2 p-2 list-decimal">
+      <ul className="pl-6 pr-4 flex flex-col min-w-0 basis-1/6 bg-slate-100 h-full gap-2 p-2 list-decimal">
         {[...Array(questions.length).keys()].map((i) => (
           <button
             key={i + "readonly"}
             onClick={() => setSelection(i)}
-            className="h-32 w-full bg-sky-50 border-2 scale-[10%]"
+          className={`box-content rounded-sm h-32 w-full border-4 ${selection === i ? "border-sky-400" : "border-white"}`}
           >
-            <Slide setQuestion={() => {}} question={questions[i]} />
+            <SlidePreview question={questions[i]} />
           </button>
         ))}
         <div className="flex flex-col gap-2">
@@ -51,6 +51,51 @@ type Question = {
   picture: File | null;
 };
 
+const SlidePreview = ({
+  question
+}: {
+  question: Question;
+}) => {
+  return (
+    <div
+      id="editor"
+      className={`w-full h-full flex-initial flex flex-col items-center pointer-events-none bg-white`}
+    >
+      <div className="text-xs font-bold flex items-center justify-center w-[90%] h-1/5 whitespace-nowrap">
+        <p className="truncate max-w-full"
+        >{question.question}</p>
+      </div>
+      <div className="h-2/5 w-1/2 shrink bg-slate-100 flex items-center justify-center">
+        {question.picture &&
+          <img
+            src={URL.createObjectURL(question.picture)}
+            className="w-full h-full object-contain"
+          />
+        }
+      </div>
+
+      <div className="w-full h-2/5 gap-1 grid grid-cols-2 p-2">
+        {[...Array(4).keys()].map((i) => (
+          <div
+            className="border-sky-100 border-2 h-[80%] bg-white flex items-center w-full"
+            style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
+          >
+            <div className="w-full flex items-center gap-2 grow">
+              <Checkbox
+                className="w-3 h-full outline-none"
+                checked={question.correct[i]}
+              />
+              <p
+                className={`w-full`}
+              >{question.answers[i]}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const Slide = ({
   question,
   setQuestion,
@@ -58,7 +103,7 @@ const Slide = ({
 }: {
   question: Question;
   setQuestion: (_: Question) => void;
-  selection?: number;
+  selection: number;
 }) => {
   const handleFileChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
     const e = event.target as HTMLInputElement;
@@ -71,9 +116,7 @@ const Slide = ({
   return (
     <div
       id="editor"
-      className={`grow flex-initial flex flex-col items-center gap-8 grow ${
-        selection ? null : "pointer-events-none"
-      }`}
+      className={`grow flex-initial flex flex-col items-center gap-8 grow`}
     >
       <TextInput
         value={question.question}
@@ -128,7 +171,7 @@ const Slide = ({
                 checked={question.correct[i]}
               />
               <TextInput
-                className="w-full"
+                className={`w-full ${selection ? null : "bg-white outline-sky-200"}`}
                 onChange={(e) =>
                   setQuestion({
                     ...question,
