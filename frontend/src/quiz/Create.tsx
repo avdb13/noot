@@ -1,6 +1,5 @@
 import { ComponentProps, useContext, useEffect, useId, useState } from "react";
 import { UserContext } from "../providers/UserContext";
-import axios from "axios";
 import { uploadImages, uploadQuiz } from "../services/quiz";
 
 export const CreateNav = () => {
@@ -11,12 +10,6 @@ export const CreateNav = () => {
     <button>exit</button>
     </>
   )
-}
-
-export type Quiz = {
-  user: string;
-  title: string;
-  questions: Question[];
 }
 
 const CreateQuiz = () => {
@@ -78,13 +71,6 @@ const CreateQuiz = () => {
       </div>
     </div>
   );
-};
-
-export type Question = {
-  question: string;
-  answers: string[];
-  correct: boolean[];
-  picture: File | null;
 };
 
 const SlidePreview = ({

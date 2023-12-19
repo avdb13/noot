@@ -1,26 +1,30 @@
 import axios from "axios";
-import { Quiz } from "../quiz/Create";
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const uploadImages = (token: string, images: Array<File>) => {
+export const uploadQuiz = (token: string, quiz: Quiz) => {
   const data = new FormData();
 
-  for (const image of images) {
+  for (const [i, image] of quiz.questions.map(q => q.picture).entries()) {
+    if (!image) {
+      continue;
+    }
     data.append('image', image, image.name)
   }
 
-  axios.post(
-    `${baseUrl}/quiz/upload`,
-    data,
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
-};
+  const quizWithoutImages = ({...quiz, questions: quiz.questions.map(q => {
+    const {_picture, ...rest} = q;
+    return rest;
+  })})
 
-export const uploadQuiz = (token: string, quiz: Quiz) => {
   axios.post(
     `${baseUrl}/quiz`,
-    quiz,
+    quizWithoutImages,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+  axios.post(
+    `${baseUrl}/quiz/images`,
+    data,
     { headers: { Authorization: `Bearer ${token}` } },
   );
 };
