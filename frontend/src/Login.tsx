@@ -2,9 +2,11 @@ import axios, { AxiosError } from "axios";
 import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./providers/UserContext";
+import { useCookies } from "react-cookie";
 
 const Login = () => {
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const [_cookies, setCookie] = useCookies(['auth']);
 
   const [error, setError] = useState<AxiosError | null>(null);
   const navigate = useNavigate();
@@ -15,18 +17,23 @@ const Login = () => {
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const user = {
+    const credentials = {
       id: idRef.current?.value,
       password: passwordRef.current?.value,
     };
     console.log(user)
 
-    axios.post("http://localhost:3000/auth/login", user).then(resp => {
+    axios.post("http://localhost:3000/auth/login", credentials).then(resp => {
       setUser(resp.data);
+      if (!user) {
+        return;
+      }
+      setCookie('auth', user.token, {});
 
       navigate("/account/profile");
     }).catch(e => {
       if (e instanceof AxiosError) {
+        console.log(e)
         setError(e)
       }
     });

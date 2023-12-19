@@ -28,6 +28,7 @@ const Home = () => {
 
 export const HomeNav = () => {
   const { user } = useContext(UserContext);
+  console.log(user)
 
   return (
     <>

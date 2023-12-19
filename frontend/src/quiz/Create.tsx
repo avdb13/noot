@@ -1,5 +1,7 @@
 import { ComponentProps, useContext, useEffect, useId, useState } from "react";
 import { UserContext } from "../providers/UserContext";
+import axios from "axios";
+import { uploadImages } from "../services/quiz";
 
 export const CreateNav = () => {
   return (
@@ -11,23 +13,31 @@ export const CreateNav = () => {
   )
 }
 
+type Quiz = {
+  user: string;
+  questions: Question[];
+}
+
 const CreateQuiz = () => {
-  const newQuestion = {
+  const newQuestion: Question = {
     picture: null,
     answers: ["", "", "", ""],
     correct: [false, false, false, false],
     question: "",
   };
   const {user, setUser} = useContext(UserContext);
-  const [questions, setQuestions] = (questions: Question[]) => setUser(prev => ({...prev, quizzes: user.quizzes}))
+  const [questions, setQuestions] = useState([newQuestion])
   const [selection, setSelection] = useState(0);
 
-
-  useEffect(() => {
-  if (user) {
-    setQuestions(user.quizzes.concat([newQuestion]))
+  if (!user) {
+    return null;
   }
-  }, [])
+
+  const handleSave = () => {
+    const files = questions.reduce((init, q) => q.picture ? [...init, q.picture] : init, [] as Array<File>);
+    console.log(user);
+    uploadImages(user.token, files);
+  }
 
   console.log(questions);
   return (
@@ -53,7 +63,7 @@ const CreateQuiz = () => {
         </div>
       </ul>
       <div className="flex flex-col grow h-full">
-        <div className="border-dotted border-2 text-center">last saved at</div>
+        <button onClick={handleSave} className="border-dotted border-2 text-center">last saved at</button>
         <Slide
           selection={selection}
           setQuestion={(p) =>

@@ -6,10 +6,12 @@ const Profile = () => {
 
   console.log(user)
   return (
-    <div>
+    <div className="grow flex flex-col justify-center">
       <p className="text-3xl">welcome back {user?.username}</p>
       <div>
-        {}
+        <h1>your quizzes</h1>
+        {user?.quizzes}
+        <h1>your statistics</h1>
       </div>
     </div>
   );
