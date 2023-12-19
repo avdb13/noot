@@ -1,4 +1,15 @@
-import { ComponentProps, useId, useState } from "react";
+import { ComponentProps, useContext, useEffect, useId, useState } from "react";
+import { UserContext } from "../providers/UserContext";
+
+export const CreateNav = () => {
+  return (
+    <>
+    <div className="grow"></div>
+    <button>save</button>
+    <button>exit</button>
+    </>
+  )
+}
 
 const CreateQuiz = () => {
   const newQuestion = {
@@ -7,12 +18,20 @@ const CreateQuiz = () => {
     correct: [false, false, false, false],
     question: "",
   };
-  const [questions, setQuestions] = useState<Question[]>([newQuestion]);
+  const {user, setUser} = useContext(UserContext);
+  const [questions, setQuestions] = (questions: Question[]) => setUser(prev => ({...prev, quizzes: user.quizzes}))
   const [selection, setSelection] = useState(0);
+
+
+  useEffect(() => {
+  if (user) {
+    setQuestions(user.quizzes.concat([newQuestion]))
+  }
+  }, [])
 
   console.log(questions);
   return (
-    <div className="w-full grow flex items-center gap-8">
+    <div className="w-full grow flex items-center">
       <ul className="pl-6 pr-4 flex flex-col min-w-0 basis-1/6 bg-slate-100 h-full gap-2 p-2 list-decimal">
         {[...Array(questions.length).keys()].map((i) => (
           <button
@@ -33,18 +52,21 @@ const CreateQuiz = () => {
           <button className="w-full p-2 bg-slate-200 ">question bank</button>
         </div>
       </ul>
-      <Slide
-        selection={selection}
-        setQuestion={(p) =>
-          setQuestions(questions.map((q, j) => (j !== selection ? q : p)))
-        }
-        question={questions[selection]}
-      />
+      <div className="flex flex-col grow h-full">
+        <div className="border-dotted border-2 text-center">last saved at</div>
+        <Slide
+          selection={selection}
+          setQuestion={(p) =>
+            setQuestions(questions.map((q, j) => (j !== selection ? q : p)))
+          }
+          question={questions[selection]}
+        />
+      </div>
     </div>
   );
 };
 
-type Question = {
+export type Question = {
   question: string;
   answers: string[];
   correct: boolean[];
@@ -116,7 +138,7 @@ const Slide = ({
   return (
     <div
       id="editor"
-      className={`grow flex-initial flex flex-col items-center gap-8 grow`}
+      className={`grow flex-initial flex flex-col items-center gap-8 grow justify-center`}
     >
       <TextInput
         value={question.question}

@@ -1,9 +1,11 @@
 import { PropsWithChildren, createContext, useState } from "react"
+import { Question } from "../quiz/Create";
 
 export type User = {
   token: string;
   username: string;
   email: string;
+  quizzes: Question[][];
 }
 
 export type UserState = {
