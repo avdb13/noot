@@ -1,9 +1,11 @@
+export {};
+
 declare global {
   type Quiz = {
     user: string;
     title: string;
     questions: Array<Question>;
-  }
+  };
 
   type Question = {
     body: string;
@@ -14,7 +16,5 @@ declare global {
   type Answer = {
     body: string;
     correct: boolean;
-  }
+  };
 }
-
-export {}

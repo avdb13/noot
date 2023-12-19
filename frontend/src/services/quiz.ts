@@ -13,9 +13,10 @@ export const uploadQuiz = (token: string, quiz: Quiz) => {
   }
 
   const quizWithoutImages = ({...quiz, questions: quiz.questions.map(q => {
-    const {_picture, ...rest} = q;
+    const {picture: _, ...rest} = q;
     return rest;
   })})
+
 
   axios.post(
     `${baseUrl}/quiz`,
