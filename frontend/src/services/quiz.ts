@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Quiz } from "../quiz/Create";
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -12,6 +13,14 @@ export const uploadImages = (token: string, images: Array<File>) => {
   axios.post(
     `${baseUrl}/quiz/upload`,
     data,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+};
+
+export const uploadQuiz = (token: string, quiz: Quiz) => {
+  axios.post(
+    `${baseUrl}/quiz`,
+    quiz,
     { headers: { Authorization: `Bearer ${token}` } },
   );
 };

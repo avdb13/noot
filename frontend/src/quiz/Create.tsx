@@ -1,7 +1,7 @@
 import { ComponentProps, useContext, useEffect, useId, useState } from "react";
 import { UserContext } from "../providers/UserContext";
 import axios from "axios";
-import { uploadImages } from "../services/quiz";
+import { uploadImages, uploadQuiz } from "../services/quiz";
 
 export const CreateNav = () => {
   return (
@@ -13,8 +13,9 @@ export const CreateNav = () => {
   )
 }
 
-type Quiz = {
+export type Quiz = {
   user: string;
+  title: string;
   questions: Question[];
 }
 
@@ -36,6 +37,9 @@ const CreateQuiz = () => {
   const handleSave = () => {
     const files = questions.reduce((init, q) => q.picture ? [...init, q.picture] : init, [] as Array<File>);
     console.log(user);
+    const quiz: Quiz = {questions, title: "some quiz", user: user.username};
+
+    uploadQuiz(user.token, quiz);
     uploadImages(user.token, files);
   }
 
