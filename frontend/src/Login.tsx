@@ -72,7 +72,7 @@ export const Logout = () => {
 
   setUser(null);
 
-  return <Navigate to="/" replace />;
+  return <Navigate to="/" />;
 }
 
 export default Login;
