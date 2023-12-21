@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import UserProvider from "./providers/user";
 import App from "./App";
+import { BrowserRouter } from "react-router-dom";
 
 // const router = createBrowserRouter([
 //   {
@@ -25,7 +26,9 @@ import App from "./App";
 // ])
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <UserProvider>
+  <BrowserRouter>
+    <UserProvider>
       <App />
-  </UserProvider>
+    </UserProvider>
+  </BrowserRouter>
 );

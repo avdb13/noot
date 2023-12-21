@@ -2,15 +2,18 @@ export {};
 
 declare global {
   type User = {
-    token: string;
     username: string;
     email: string;
     quizzes?: Quiz[];
   };
 
+  type Credentials = { id: string; password: string };
+
   type UserState = {
     user: User | null;
     setUser: (_: User | null) => void;
+    login: (_: Credentials) => Promise<void>;
+    logout: () => void;
   };
 
   type Quiz = {
