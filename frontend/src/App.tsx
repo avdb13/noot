@@ -9,15 +9,13 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Home, { HomeNav } from "./Home";
-import Login from "./Login";
+import Login, { Logout } from "./Login";
 import CreateQuiz, { CreateNav } from "./quiz/Create";
 import Register from "./Register";
 import Profile from "./Profile";
 import ProtectedRoute from "./ProtectedRoute";
 
 const App = () => {
-  const { setUser } = useContext(UserContext);
-
   return (
     <div className="prose prose-slate 2xl:prose-2xl flex flex-col justify-center items-center h-screen w-screen [&>*]:capitalize">
       <nav className="basis-1/8 flex-initial flex justify-between sticky bg-zinc-200 w-full [&>*]:uppercase gap-4 p-4 font-bold">
@@ -34,8 +32,7 @@ const App = () => {
         <Route path="/account/register" element={<Register />} />
         <Route
           path="/account/logout"
-          action={() => setUser(null)}
-          element={<Navigate to="/" replace />}
+          element={<Logout />}
         />
       </Routes>
       <div className="basis-1/8 flex-initial text-slate-600 bg-slate-200 w-full p-4">

@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import { useContext, useRef, useState } from "react";
 import { UserContext } from "./providers/user";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useContext(UserContext);
@@ -65,5 +66,13 @@ const Login = () => {
     </div>
   );
 };
+
+export const Logout = () => {
+  const {setUser} = useContext(UserContext);
+
+  setUser(null);
+
+  return <Navigate to="/" replace />;
+}
 
 export default Login;

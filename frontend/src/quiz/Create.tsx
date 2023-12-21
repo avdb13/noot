@@ -17,12 +17,12 @@ const CreateQuiz = () => {
     picture: null,
     answers: new Array(4).fill({}).map(() => ({body: "", correct: false} as Answer)),
   };
+  console.log(document.cookie.split(";").find(cookie => cookie.startsWith("auth")))
 
   const {user} = useContext(UserContext);
   const [questions, setQuestions] = useState([newQuestion])
   const [selection, setSelection] = useState(0);
 
-  console.log(user);
   if (!user) {
     return null;
   }
