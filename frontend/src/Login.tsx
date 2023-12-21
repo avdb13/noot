@@ -1,12 +1,10 @@
 import axios, { AxiosError } from "axios";
 import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./providers/UserContext";
-import { useCookies } from "react-cookie";
+import { UserContext } from "./providers/user";
 
 const Login = () => {
   const { user, setUser } = useContext(UserContext);
-  const [_cookies, setCookie] = useCookies(['auth']);
 
   const [error, setError] = useState<AxiosError | null>(null);
   const navigate = useNavigate();
@@ -27,8 +25,6 @@ const Login = () => {
       if (!user) {
         return;
       }
-      setCookie('auth', user.token, {});
-
       navigate("/account/profile");
     }).catch(e => {
       if (e instanceof AxiosError) {
