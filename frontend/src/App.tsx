@@ -1,7 +1,7 @@
 import {
   useContext,
 } from "react";
-import { UserContext } from "./providers/UserContext";
+import { UserContext } from "./providers/user";
 import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Home, { HomeNav } from "./Home";
 import Login from "./Login";

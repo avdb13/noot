@@ -1,5 +1,5 @@
 import { PropsWithChildren, useContext } from "react";
-import { UserContext } from "./providers/UserContext";
+import { UserContext } from "./providers/user";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = (props: PropsWithChildren)  => {

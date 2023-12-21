@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserContext } from "./providers/UserContext";
+import { UserContext } from "./providers/user";
 import { Link } from "react-router-dom";
 
 const Home = () => {

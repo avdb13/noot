@@ -1,5 +1,5 @@
 import { ComponentProps, useContext, useId, useState } from "react";
-import { UserContext } from "../providers/UserContext";
+import { UserContext } from "../providers/user";
 import { uploadQuiz } from "../services/quiz";
 
 export const CreateNav = () => {
