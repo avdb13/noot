@@ -13,6 +13,7 @@ import Login from "./Login";
 import CreateQuiz, { CreateNav } from "./quiz/Create";
 import Register from "./Register";
 import Profile from "./Profile";
+import ProtectedRoute from "./ProtectedRoute";
 
 const App = () => {
   const { setUser } = useContext(UserContext);
@@ -29,7 +30,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/profile" element={<Profile />} />
-        <Route path="/account/create" element={<CreateQuiz />} />
+        <Route path="/account/create" element={<ProtectedRoute><CreateQuiz /></ProtectedRoute>} />
         <Route path="/account/register" element={<Register />} />
         <Route
           path="/account/logout"

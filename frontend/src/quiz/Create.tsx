@@ -1,6 +1,5 @@
 import { ComponentProps, useContext, useId, useState } from "react";
 import { UserContext } from "../providers/user";
-import { uploadQuiz } from "../services/quiz";
 
 export const CreateNav = () => {
   return (
@@ -23,15 +22,16 @@ const CreateQuiz = () => {
   const [questions, setQuestions] = useState([newQuestion])
   const [selection, setSelection] = useState(0);
 
+  console.log(user);
   if (!user) {
     return null;
   }
 
   const handleSave = () => {
     console.log(user);
-    const quiz: Quiz = {questions, title: "some quiz", user: user.username};
+    const _quiz: Quiz = {questions, title: "some quiz", user: user.username};
 
-    uploadQuiz(user.token, quiz);
+    // uploadQuiz(user.token, quiz);
   }
 
   console.log(questions);
@@ -44,7 +44,7 @@ const CreateQuiz = () => {
             onClick={() => setSelection(i)}
           className={`box-content rounded-sm h-32 w-full border-4 ${selection === i ? "border-sky-400" : "border-white"}`}
           >
-            <SlidePreview question={questions[i]} />
+            <SlidePreview question={questions[i] ?? newQuestion} />
           </button>
         ))}
         <div className="flex flex-col gap-2">
@@ -64,7 +64,7 @@ const CreateQuiz = () => {
           setQuestion={(p) =>
             setQuestions(questions.map((q, j) => (j !== selection ? q : p)))
           }
-          question={questions[selection]}
+          question={questions[selection]!}
         />
       </div>
     </div>
@@ -83,7 +83,7 @@ const SlidePreview = ({
     >
       <div className="text-xs font-bold flex items-center justify-center w-[90%] h-1/5 whitespace-nowrap">
         <p className="truncate max-w-full"
-        >{question.question}</p>
+        >{question.body}</p>
       </div>
       <div className="h-2/5 w-1/2 shrink bg-slate-100 flex items-center justify-center">
         {question.picture &&
@@ -99,15 +99,17 @@ const SlidePreview = ({
           <div
             className="border-sky-100 border-2 h-[80%] bg-white flex items-center w-full"
             style={{ filter: `hue-rotate(${(360 / 4) * i}deg)` }}
+            key={i}
           >
             <div className="w-full flex items-center gap-2 grow">
               <Checkbox
                 className="w-3 h-full outline-none"
-                checked={question.correct[i]}
+                checked={question.answers[i]?.correct ?? false}
+                readOnly
               />
               <p
                 className={`w-full`}
-              >{question.answers[i]}</p>
+              >{question.answers[i]?.body ?? ""}</p>
             </div>
           </div>
         ))}
@@ -129,7 +131,7 @@ const Slide = ({
     const e = event.target as HTMLInputElement;
 
     if (e.files) {
-      setQuestion({ ...question, picture: e.files[0] });
+      setQuestion({ ...question, picture: e.files[0] || null });
     }
   };
 
@@ -139,8 +141,8 @@ const Slide = ({
       className={`grow flex-initial flex flex-col items-center gap-8 grow justify-center`}
     >
       <TextInput
-        value={question.question}
-        onChange={(e) => setQuestion({ ...question, question: e.target.value })}
+        value={question.body}
+        onChange={(e) => setQuestion({ ...question, body: e.target.value })}
         className="w-[60%] text"
       />
       <div className="h-64 w-1/2 shrink bg-slate-100 rounded-md shadow-inner flex items-center justify-center">
@@ -182,13 +184,13 @@ const Slide = ({
                   setQuestion
                     ? setQuestion({
                         ...question,
-                        correct: question.correct.map((a, j) =>
-                          j === i ? e.target.checked : a,
+                        answers: question.answers.map((a, j) =>
+                          j === i ? ({...a, correct: e.target.checked}) : a,
                         ),
                       })
                     : null
                 }
-                checked={question.correct[i]}
+                checked={question.answers[i]?.correct ?? false}
               />
               <TextInput
                 className={`w-full ${selection ? null : "bg-white outline-sky-200"}`}
@@ -196,11 +198,11 @@ const Slide = ({
                   setQuestion({
                     ...question,
                     answers: question.answers.map((a, j) =>
-                      j === i ? e.target.value : a,
+                      j === i ? ({...a, correct: e.target.checked}) : a,
                     ),
                   })
                 }
-                value={question.answers[i]}
+                value={question.answers[i]?.body ?? ""}
               />
             </div>
           </div>

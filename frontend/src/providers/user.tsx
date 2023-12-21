@@ -11,6 +11,7 @@ const UserProvider = (props: PropsWithChildren) => {
 
   const login = useCallback(async (credentials: Credentials) => {
     const resp = await userService.login(credentials);
+    console.log(resp)
     setUser(resp.data as User);
 
     navigate("/account/profile");
