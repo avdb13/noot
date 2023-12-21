@@ -17,15 +17,18 @@ export const uploadQuiz = (token: string, quiz: Quiz) => {
     return rest;
   })})
 
+  try {
+    axios.post(
+      `${baseUrl}/quiz`,
+      quizWithoutImages,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    axios.post(
+      `${baseUrl}/quiz/images`,
+      data,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+  } catch(e) {
 
-  axios.post(
-    `${baseUrl}/quiz`,
-    quizWithoutImages,
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
-  axios.post(
-    `${baseUrl}/quiz/images`,
-    data,
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
+  }
 };

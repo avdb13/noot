@@ -1,6 +1,6 @@
-import { ComponentProps, useContext, useEffect, useId, useState } from "react";
+import { ComponentProps, useContext, useId, useState } from "react";
 import { UserContext } from "../providers/UserContext";
-import { uploadImages, uploadQuiz } from "../services/quiz";
+import { uploadQuiz } from "../services/quiz";
 
 export const CreateNav = () => {
   return (
@@ -14,12 +14,12 @@ export const CreateNav = () => {
 
 const CreateQuiz = () => {
   const newQuestion: Question = {
+    body: "",
     picture: null,
-    answers: ["", "", "", ""],
-    correct: [false, false, false, false],
-    question: "",
+    answers: new Array(4).fill({}).map(() => ({body: "", correct: false} as Answer)),
   };
-  const {user, setUser} = useContext(UserContext);
+
+  const {user} = useContext(UserContext);
   const [questions, setQuestions] = useState([newQuestion])
   const [selection, setSelection] = useState(0);
 
@@ -28,12 +28,10 @@ const CreateQuiz = () => {
   }
 
   const handleSave = () => {
-    const files = questions.reduce((init, q) => q.picture ? [...init, q.picture] : init, [] as Array<File>);
     console.log(user);
     const quiz: Quiz = {questions, title: "some quiz", user: user.username};
 
     uploadQuiz(user.token, quiz);
-    uploadImages(user.token, files);
   }
 
   console.log(questions);

@@ -21,7 +21,6 @@ const Login = () => {
       id: idRef.current?.value,
       password: passwordRef.current?.value,
     };
-    console.log(user)
 
     axios.post("http://localhost:3000/auth/login", credentials).then(resp => {
       setUser(resp.data);
