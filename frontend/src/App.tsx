@@ -1,12 +1,6 @@
-import { useContext } from "react";
-import { UserContext } from "./providers/user";
 import {
-  BrowserRouter,
-  Link,
-  Navigate,
   Route,
-  Routes,
-  useNavigate,
+  Routes
 } from "react-router-dom";
 import Home, { HomeNav } from "./Home";
 import Login, { Logout } from "./Login";
@@ -17,8 +11,8 @@ import ProtectedRoute from "./ProtectedRoute";
 
 const App = () => {
   return (
-    <div className="prose prose-slate 2xl:prose-2xl flex flex-col justify-center items-center h-screen w-screen [&>*]:capitalize">
-      <nav className="basis-1/8 flex-initial flex justify-between sticky bg-zinc-200 w-full [&>*]:uppercase gap-4 p-4 font-bold">
+    <div className="[&>*]:font-poppins flex flex-col justify-center items-center h-screen w-screen [&>*]:capitalize ">
+      <nav className="basis-1/8 flex-initial flex justify-between sticky bg-zinc-200 w-full [&>*]:uppercase gap-4 p-4 font-medium">
         <Routes>
           <Route path="/account/create" element={<CreateNav />} />
           <Route path="*" element={<HomeNav />} />
